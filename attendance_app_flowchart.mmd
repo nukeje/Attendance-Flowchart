@@ -1,0 +1,61 @@
+flowchart TD
+    A[Employee Opens App] --> B{User Authenticated?}
+    B -->|Yes| G[Dashboard]
+    B -->|No| C[Login Screen]
+    C --> D{GPS Permission Granted?}
+    D -->|No| E[Request GPS Permission]
+    E --> F{Permission Granted?}
+    F -->|No| G1[Show Error: GPS Required for Login]
+    G1 --> C
+    F -->|Yes| H[Get Current Location]
+    D -->|Yes| H[Get Current Location]
+    
+    H --> I{Location Retrieved?}
+    I -->|No| J[Show Error: Cannot Get Location]
+    J --> K[Disable Login Button]
+    K --> C
+    I -->|Yes| L{Within Assigned Facility?}
+    L -->|No| M[Show Message: Outside Facility Area]
+    M --> N[Disable Login Button]
+    N --> C
+    L -->|Yes| O[Enable Login Button]
+    O --> P[Enter Credentials]
+    P --> Q{Valid Credentials?}
+    Q -->|No| R[Show Error Message]
+    R --> C
+    Q -->|Yes| G[Dashboard]
+    
+    G --> S[Check In/Out Button]
+    S --> T[Capture Current Time]
+    T --> U{Current Status?}
+    
+    U -->|Checked Out| V[Record Check-In]
+    U -->|Checked In| W[Record Check-Out]
+    
+    V --> X[Save to Local Database]
+    W --> X[Save to Local Database]
+    
+    X --> Y{Internet Available?}
+    Y -->|Yes| Z[Sync to Server]
+    Y -->|No| AA[Queue for Later Sync]
+    
+    Z --> BB{Sync Successful?}
+    BB -->|Yes| CC[Update Status: Synced]
+    BB -->|No| AA[Queue for Later Sync]
+    
+    CC --> DD[Show Success Message]
+    AA --> DD[Show Success Message]
+    
+    DD --> EE[Update Dashboard Status]
+    EE --> G
+    
+    %% Super Admin Process
+    FF[Super Admin Dashboard] --> GG[Register Employee]
+    GG --> HH[Assign Facility to Employee]
+    HH --> II[Set Facility Location/Coordinates]
+    II --> JJ[Employee Profile Created]
+    
+    %% Manager features
+    KK[Manager Dashboard] --> LL[View Employee Attendance]
+    LL --> MM[Filter by Date/Employee]
+    MM --> NN[Export Reports]
